@@ -1,0 +1,12 @@
+---
+# vars file with global variable values for all hosts
+
+#Hostname: Enter Red Hat Satellite/Capsule server hostname
+
+#Activation_Key: Enter Activation Key Name
+
+#Organization_Name: Enter Organization Name(In which you want to register host on satellite server)
+
+#ansible_ssh_user: Enter ssh username(Present on client system)
+
+#ansible_ssh_pass: Enter ssh password to take the ssh

@@ -1,0 +1,34 @@
+---
+- name: Copying the the public key on host
+  local_action: ansible.builtin.command sshpass -p "{{ ansible_ssh_pass }}" ssh-copy-id -i ~foreman-proxy/.ssh/id_rsa_foreman_proxy.pub "{{ ansible_ssh_user }}"@"{{ inventory_hostname }}"
+
+
+- name: Removing the old katello packages on host
+  yum:
+    name: ['katello-host-tools', 'katello-host-tools-tracer', 'katello-host-tools-fact-plugin', 'katello-agent', 'katello-ca-consumer-{{ Hostname }}']
+    state: absent
+  ignore_errors: yes
+  become: True
+
+
+- name: Installing Katello-ca-consumer package from "{{ Hostname }}" to host
+  yum:
+    name: http://{{ Hostname }}/pub/katello-ca-consumer-latest.noarch.rpm
+    state: present
+  become: True 
+
+
+- name: Registering the host to the "{{ Hostname }}" using Activation Key
+  redhat_subscription:
+    activationkey: "{{ Activation_Key }}"
+    org_id: "{{ Organization_Name }}" 
+    state: present
+    force_register: True
+  become: True
+
+
+- name: Installing the Katello packages on host 
+  yum: 
+    name: ['katello-host-tools', 'katello-host-tools-tracer', 'katello-agent']
+    state: present
+  become: True
